@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>3DArtStuff — Hard Surface 3D Art & Tutorials</title>
+  <meta name="description" content="Hard surface 3D modeling tutorials in Blender and Plasticity. Portfolio, free tutorials, and premium resources by Alberto.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080a0f;
+      --surface: #0e1118;
+      --surface2: #141820;
+      --border: #1e2330;
+      --border2: #252d3d;
+      --accent: #4f9eff;
+      --accent2: #2a7de0;
+      --accent-glow: rgba(79,158,255,0.15);
+      --hot: #ff5c3a;
+      --text: #e8edf5;
+      --text-muted: #6b7a96;
+      --text-dim: #323d52;
+      --font-display: 'Bebas Neue', 'Arial Black', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Cursor */
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed; pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s;
+      box-shadow: 0 0 12px var(--accent);
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid rgba(79,158,255,0.35);
+      border-radius: 50%;
+      position: fixed; pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: left 0.1s ease, top 0.1s ease;
+    }
+
+    /* Grid lines background */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(79,158,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79,158,255,0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 3rem;
+      transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(8,10,15,0.9);
+      backdrop-filter: blur(20px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.55rem 1.4rem;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover {
+      background: var(--accent2);
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 3rem 5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 70% 50%, rgba(79,158,255,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 30% 40% at 20% 80%, rgba(255,92,58,0.04) 0%, transparent 60%);
+    }
+    .hero-scan {
+      position: absolute; left: 0; right: 0;
+      height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      animation: scan 4s 1s infinite;
+    }
+    @keyframes scan {
+      0% { top: 0; opacity: 0; }
+      10% { opacity: 0.4; }
+      90% { opacity: 0.4; }
+      100% { top: 100%; opacity: 0; }
+    }
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.3s forwards;
+      position: relative; z-index: 1;
+    }
+    .hero-label::before {
+      content: '//'; margin-right: 0.6em; opacity: 0.5;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(5rem, 12vw, 13rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      margin-bottom: 0.1em;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.45s forwards;
+      position: relative; z-index: 1;
+    }
+    .hero-title .accent { color: var(--accent); }
+    .hero-title .dim { color: var(--text-dim); }
+    .hero-bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-top: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.7s forwards;
+      position: relative; z-index: 1;
+    }
+    .hero-desc {
+      max-width: 400px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      border-left: 2px solid var(--accent);
+      padding-left: 1.5rem;
+    }
+    .hero-actions { display: flex; gap: 1rem; align-items: center; }
+    .btn-primary {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      padding: 0.9rem 2rem;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent2); box-shadow: 0 0 24px var(--accent-glow); }
+    .btn-ghost {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border2);
+      padding: 0.9rem 2rem;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .hero-stats {
+      display: flex; gap: 3rem;
+      opacity: 0;
+      animation: fadeIn 0.7s 1s forwards;
+      position: absolute; top: 45%; right: 3rem;
+      z-index: 1;
+    }
+    .stat { text-align: right; }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      color: var(--text);
+      line-height: 1;
+    }
+    .stat-lbl {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* SECTION SHARED */
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+    .section-tag::before { content: '// '; }
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 6vw, 6rem);
+      line-height: 0.9;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    /* WORK */
+    .work {
+      padding: 8rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    .work-header {
+      display: flex; align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 4rem;
+    }
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .work-item {
+      background: var(--bg);
+      overflow: hidden;
+      position: relative;
+      transition: background 0.3s;
+    }
+    .work-item:hover { background: var(--surface); }
+    .work-item:nth-child(1) { grid-column: span 8; }
+    .work-item:nth-child(2) { grid-column: span 4; }
+    .work-item:nth-child(3) { grid-column: span 4; }
+    .work-item:nth-child(4) { grid-column: span 8; }
+    .work-img {
+      width: 100%; aspect-ratio: 16/9;
+      overflow: hidden;
+      background: var(--surface2);
+      position: relative;
+    }
+    .work-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+      filter: brightness(0.85) saturate(0.9);
+    }
+    .work-item:hover .work-img img { transform: scale(1.04); filter: brightness(1) saturate(1); }
+    .work-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+    }
+    .work-img-placeholder span {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+    }
+    .work-info {
+      padding: 1.8rem 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .work-cat {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .work-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .work-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .work-corner {
+      position: absolute; top: 1rem; right: 1rem;
+      font-size: 1.1rem; color: var(--text-dim);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .work-item:hover .work-corner { color: var(--accent); transform: translate(3px,-3px); }
+
+    /* TUTORIALS */
+    .tutorials {
+      padding: 8rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: relative; z-index: 1;
+      background: var(--surface);
+    }
+    .tutorials-header {
+      display: flex; align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 5rem;
+    }
+    .tutorials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-bottom: 1px;
+    }
+    .tutorial-card {
+      background: var(--bg);
+      padding: 2.5rem;
+      position: relative;
+      transition: background 0.2s;
+      border-top: 2px solid transparent;
+    }
+    .tutorial-card:hover { background: var(--surface2); }
+    .tutorial-card.featured { border-top-color: var(--accent); }
+    .tutorial-card.hot { border-top-color: var(--hot); }
+    .t-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      margin-bottom: 1.5rem;
+    }
+    .t-badge.paid { background: var(--accent); color: var(--bg); }
+    .t-badge.free { border: 1px solid var(--border2); color: var(--text-muted); }
+    .t-badge.series { background: var(--hot); color: #fff; }
+    .t-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 0.8rem;
+    }
+    .t-tools {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .t-tool {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.5rem;
+    }
+    .t-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+    .t-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .t-price {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .t-price small {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      display: block;
+      font-weight: 400;
+    }
+    .t-link {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .t-link:hover { color: var(--accent); }
+
+    /* YouTube strip */
+    .yt-strip {
+      padding: 5rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 4rem;
+    }
+    .yt-left { flex: 1; }
+    .yt-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      line-height: 0.95;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+    .yt-heading span { color: #ff4444; }
+    .yt-sub {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 400px;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+    .yt-series {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+    .yt-series-item {
+      background: var(--surface);
+      padding: 1.8rem;
+      transition: background 0.2s;
+    }
+    .yt-series-item:hover { background: var(--surface2); }
+    .yt-series-name {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .yt-series-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    .yt-series-link {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ABOUT */
+    .about {
+      padding: 8rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8rem;
+      align-items: center;
+    }
+    .about-photo-wrap { position: relative; }
+    .about-photo {
+      width: 100%; aspect-ratio: 4/5;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .about-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .about-photo-placeholder {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+    }
+    .about-badge {
+      position: absolute;
+      bottom: -1px; left: -1px; right: -1px;
+      background: var(--accent);
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .about-badge-text {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--bg);
+      letter-spacing: 0.05em;
+    }
+    .about-badge-sub {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: rgba(0,0,0,0.6);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .about-bio {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.9;
+      margin-bottom: 3rem;
+    }
+    .about-bio p + p { margin-top: 1.2rem; }
+    .tools-list {
+      display: flex; gap: 0.6rem; flex-wrap: wrap;
+      margin-bottom: 3rem;
+    }
+    .tool-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      border: 1px solid var(--border2);
+      padding: 0.4rem 0.9rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .tool-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* CONTACT */
+    .contact {
+      padding: 8rem 3rem;
+      position: relative; z-index: 1;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8rem;
+      align-items: center;
+    }
+    .contact-heading {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 7vw, 8rem);
+      line-height: 0.9;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+    .contact-heading span { color: var(--accent); }
+    .contact-sub {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 380px;
+    }
+    .contact-links { display: flex; flex-direction: column; gap: 0; }
+    .contact-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.8rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .contact-row:first-child { border-top: 1px solid var(--border); }
+    .contact-row-label {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .contact-row-value {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-row-value:hover { color: var(--accent); }
+    .contact-row-arrow { color: var(--text-dim); transition: color 0.2s, transform 0.2s; }
+    .contact-row:hover .contact-row-arrow { color: var(--accent); transform: translate(3px,-3px); }
+
+    /* FOOTER */
+    footer {
+      padding: 2rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative; z-index: 1;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+    .footer-brand span { color: var(--accent); }
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+    }
+    .footer-top {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-top:hover { color: var(--accent); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 0 1.5rem 4rem; }
+      .hero-stats { display: none; }
+      .hero-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; }
+      .work { padding: 5rem 1.5rem; }
+      .work-grid { grid-template-columns: 1fr; }
+      .work-item:nth-child(n) { grid-column: span 1; }
+      .tutorials { padding: 5rem 1.5rem; }
+      .tutorials-header { flex-direction: column; align-items: flex-start; gap: 2rem; }
+      .tutorials-grid { grid-template-columns: 1fr; }
+      .yt-strip { padding: 4rem 1.5rem; flex-direction: column; gap: 3rem; }
+      .yt-series { grid-template-columns: 1fr; }
+      .about { padding: 5rem 1.5rem; grid-template-columns: 1fr; gap: 4rem; }
+      .contact { padding: 5rem 1.5rem; }
+      .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#" class="nav-logo">3D<span>Art</span>Stuff</a>
+    <ul class="nav-links">
+      <li><a href="#work">Portfolio</a></li>
+      <li><a href="#tutorials">Tutorials</a></li>
+      <li><a href="#youtube">YouTube</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="https://3dartstuff.gumroad.com" target="_blank" class="nav-cta">Shop Tutorials ↗</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-scan"></div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">Blender</div>
+        <div class="stat-lbl">Hard Surface</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">Plasticity</div>
+        <div class="stat-lbl">CAD Modeling</div>
+      </div>
+    </div>
+
+    <p class="hero-label">Hard Surface 3D Art & Tutorials</p>
+    <h1 class="hero-title">
+      <span class="dim">3D</span><br>
+      <span class="accent">ART</span><br>
+      <span>STUFF</span>
+    </h1>
+    <div class="hero-bottom">
+      <p class="hero-desc">Hard surface modeling, sci-fi props, and real-time tutorials in Blender & Plasticity. No timelapses. No fluff. Just the full process.</p>
+      <div class="hero-actions">
+        <a href="#tutorials" class="btn-primary">Browse Tutorials</a>
+        <a href="https://www.youtube.com/user/AlbertoCGArt" target="_blank" class="btn-ghost">Watch on YouTube</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO -->
+  <section class="work" id="work">
+    <div class="work-header reveal">
+      <div>
+        <p class="section-tag">Selected Work</p>
+        <h2 class="section-heading">Portfolio</h2>
+      </div>
+      <a href="https://www.3dartstuff.com/portfolio" class="btn-ghost">View All Work</a>
+    </div>
+    <div class="work-grid">
+      <div class="work-item reveal">
+        <div class="work-img">
+          <img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/f6879349-305f-4898-805d-72e76460b0ba/scifi_scanner_ac_03.jpg" alt="Sci-fi HardSurface Device" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'work-img-placeholder\'><span>PROJECT IMAGE</span></div>'">
+        </div>
+        <div class="work-info">
+          <div class="work-cat">Plasticity · Hard Surface</div>
+          <div class="work-title">Sci-Fi HardSurface Device</div>
+          <p class="work-desc">A fully modeled sci-fi scanning device built in Plasticity. Comes with a free modeling tutorial walkthrough.</p>
+        </div>
+        <div class="work-corner">↗</div>
+      </div>
+      <div class="work-item reveal">
+        <div class="work-img">
+          <img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/1688156266750-CJ1TZ4TR5SO8WLE4DDPF/ac_scope_02.jpg" alt="Sci-Fi Scope" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'work-img-placeholder\'><span>PROJECT IMAGE</span></div>'">
+        </div>
+        <div class="work-info">
+          <div class="work-cat">Plasticity · Props</div>
+          <div class="work-title">Sci-Fi Scope Model</div>
+          <p class="work-desc">Detailed weapon scope with hard surface detailing and clean topology throughout.</p>
+        </div>
+        <div class="work-corner">↗</div>
+      </div>
+      <div class="work-item reveal">
+        <div class="work-img">
+          <img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/97f35a71-dfbc-4d0c-a81e-7470c10a54de/sci-fi_battery_ac_01.jpg" alt="HardSurface Device 2" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'work-img-placeholder\'><span>PROJECT IMAGE</span></div>'">
+        </div>
+        <div class="work-info">
+          <div class="work-cat">Plasticity · Hard Surface</div>
+          <div class="work-title">HardSurface Device 2</div>
+          <p class="work-desc">Second entry in the sci-fi device series — a compact battery unit with modular panel design.</p>
+        </div>
+        <div class="work-corner">↗</div>
+      </div>
+      <div class="work-item reveal">
+        <div class="work-img">
+          <img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/8805f31c-2810-4c54-b868-5ddbc14c440a/workshop_blockout_20.png" alt="The Workshop" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'work-img-placeholder\'><span>PROJECT IMAGE</span></div>'">
+        </div>
+        <div class="work-info">
+          <div class="work-cat">Blender · Environment</div>
+          <div class="work-title">The Workshop</div>
+          <p class="work-desc">Full environment modeling series in Blender. Real-time, no edits, no timelapse — the complete blockout-to-finish process.</p>
+        </div>
+        <div class="work-corner">↗</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TUTORIALS -->
+  <section class="tutorials" id="tutorials">
+    <div class="tutorials-header reveal">
+      <div>
+        <p class="section-tag">Learn 3D</p>
+        <h2 class="section-heading">Tutorials<br>& Resources</h2>
+      </div>
+      <a href="https://3dartstuff.gumroad.com" target="_blank" class="btn-primary">All Products on Gumroad ↗</a>
+    </div>
+    <div class="tutorials-grid">
+      <div class="tutorial-card featured reveal">
+        <span class="t-badge paid">★ Best Seller</span>
+        <h3 class="t-title">Sci-Fi HardSurface Device</h3>
+        <div class="t-tools">
+          <span class="t-tool">Plasticity</span>
+        </div>
+        <p class="t-desc">The full modeling tutorial for the sci-fi scanning device. Learn hard surface techniques, form language, and clean workflows from scratch.</p>
+        <div class="t-footer">
+          <div class="t-price">$29<small>One-time · Instant download</small></div>
+          <a href="https://3dartstuff.gumroad.com" target="_blank" class="t-link">Get it →</a>
+        </div>
+      </div>
+      <div class="tutorial-card hot reveal">
+        <span class="t-badge series">Series</span>
+        <h3 class="t-title">Random Modeling in Plasticity</h3>
+        <div class="t-tools">
+          <span class="t-tool">Plasticity</span>
+        </div>
+        <p class="t-desc">A growing collection of unscripted modeling sessions in Plasticity. Great for building intuition and learning by watching real decisions happen in real time.</p>
+        <div class="t-footer">
+          <div class="t-price">$19<small>Series bundle</small></div>
+          <a href="https://3dartstuff.gumroad.com" target="_blank" class="t-link">Get it →</a>
+        </div>
+      </div>
+      <div class="tutorial-card reveal">
+        <span class="t-badge free">Free</span>
+        <h3 class="t-title">Blending Materials in Blender</h3>
+        <div class="t-tools">
+          <span class="t-tool">Blender</span>
+          <span class="t-tool">Shader Editor</span>
+        </div>
+        <p class="t-desc">Quick tutorial on how to blend materials seamlessly in Blender. Perfect for beginners and anyone looking to level up their texturing.</p>
+        <div class="t-footer">
+          <div class="t-price">Free<small>No strings attached</small></div>
+          <a href="https://www.3dartstuff.com/blending-materials-in-blender" target="_blank" class="t-link">Watch Now →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YOUTUBE -->
+  <section class="yt-strip" id="youtube">
+    <div class="yt-left reveal">
+      <p class="section-tag">YouTube Channel</p>
+      <h2 class="yt-heading">Watch.<br><span>Learn.</span><br>Create.</h2>
+      <p class="yt-sub">Full real-time modeling sessions, no timelapses, no edits. Watch the complete process from blockout to final render on YouTube — all free.</p>
+      <a href="https://www.youtube.com/user/AlbertoCGArt" target="_blank" class="btn-primary">Subscribe on YouTube ↗</a>
+    </div>
+    <div class="yt-series reveal">
+      <div class="yt-series-item">
+        <div class="yt-series-name">Blender 101</div>
+        <p class="yt-series-desc">Foundational tutorials for beginners. Learn Blender from the ground up with no assumptions.</p>
+        <a href="https://www.3dartstuff.com/categories/blender-101" target="_blank" class="yt-series-link">Watch Series →</a>
+      </div>
+      <div class="yt-series-item">
+        <div class="yt-series-name">Plasticity Tutorials</div>
+        <p class="yt-series-desc">Everything Plasticity — hard surface forms, CAD-style modeling, and prop creation workflows.</p>
+        <a href="https://www.3dartstuff.com/categories/plasticity" target="_blank" class="yt-series-link">Watch Series →</a>
+      </div>
+      <div class="yt-series-item">
+        <div class="yt-series-name">The Workshop</div>
+        <p class="yt-series-desc">Full environment build in Blender. Real-time, uncut, from rough blockout to finished scene.</p>
+        <a href="https://www.3dartstuff.com/the-workshop-3d-modeling-in-blender" target="_blank" class="yt-series-link">Watch Series →</a>
+      </div>
+      <div class="yt-series-item">
+        <div class="yt-series-name">Vertex Paint</div>
+        <p class="yt-series-desc">Blend materials and textures using Vertex Paint in Blender — a fast and flexible technique.</p>
+        <a href="https://www.3dartstuff.com/vertex-paint-in-blender" target="_blank" class="yt-series-link">Watch Now →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-photo-wrap reveal">
+      <div class="about-photo">
+        <span class="about-photo-placeholder">YOUR PHOTO</span>
+      </div>
+      <div class="about-badge">
+        <span class="about-badge-text">Hard Surface Artist</span>
+        <span class="about-badge-sub">Blender · Plasticity</span>
+      </div>
+    </div>
+    <div class="reveal">
+      <p class="section-tag">About</p>
+      <h2 class="section-heading" style="margin-bottom:2rem">Alberto<br>CGArt</h2>
+      <div class="about-bio">
+        <p>I'm a hard surface 3D artist focused on creating sci-fi props, weapons, and environments in Blender and Plasticity. My work spans personal projects and professional commissions.</p>
+        <p>I started the 3DArtStuff YouTube channel because I couldn't find tutorials that showed the real, unedited process. No timelapses. No magic cuts. Just honest, real-time modeling from someone who's figured it out by doing it.</p>
+        <p>When I'm not modeling, I'm building tutorials and resources so you can get there faster than I did.</p>
+      </div>
+      <div class="tools-list">
+        <span class="tool-tag">Blender</span>
+        <span class="tool-tag">Plasticity</span>
+        <span class="tool-tag">Hard Surface</span>
+        <span class="tool-tag">Sci-Fi Props</span>
+        <span class="tool-tag">Environment Art</span>
+        <span class="tool-tag">Vertex Paint</span>
+        <span class="tool-tag">Shader Nodes</span>
+        <span class="tool-tag">Real-Time Workflows</span>
+      </div>
+      <a href="#contact" class="btn-primary">Get In Touch</a>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="contact-inner">
+      <div class="reveal">
+        <p class="section-tag">Contact</p>
+        <h2 class="contact-heading">Let's<br>work<br><span>together.</span></h2>
+        <p class="contact-sub">Open for commissions, collaborations, and tutorial requests. Reach out through any of the channels below.</p>
+      </div>
+      <div class="contact-links reveal">
+        <div class="contact-row">
+          <span class="contact-row-label">Website</span>
+          <a href="https://www.3dartstuff.com" target="_blank" class="contact-row-value">3dartstuff.com</a>
+          <span class="contact-row-arrow">↗</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-row-label">Gumroad Store</span>
+          <a href="https://3dartstuff.gumroad.com" target="_blank" class="contact-row-value">3dartstuff.gumroad.com</a>
+          <span class="contact-row-arrow">↗</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-row-label">YouTube</span>
+          <a href="https://www.youtube.com/user/AlbertoCGArt" target="_blank" class="contact-row-value">AlbertoCGArt</a>
+          <span class="contact-row-arrow">↗</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-row-label">Email</span>
+          <a href="mailto:hello@3dartstuff.com" class="contact-row-value">hello@3dartstuff.com</a>
+          <span class="contact-row-arrow">↗</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-brand">3D<span>Art</span>Stuff</span>
+    <span class="footer-copy">© 2026 3DArtStuff. All rights reserved.</span>
+    <a href="#" class="footer-top">Back to top ↑</a>
+  </footer>
+
+  <script>
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    });
+
+    // Nav scroll
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
