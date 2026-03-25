@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Portfolio — 3DArtStuff</title>
+  <meta name="description" content="Hard surface 3D art portfolio by Alberto CGArt. Sci-fi props, environments, and weapons built in Blender and Plasticity.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .portfolio-grid {
+      padding: 5rem 3rem 8rem;
+      position: relative; z-index: 1;
+    }
+    .portfolio-filter {
+      display: flex; gap: 0.6rem; flex-wrap: wrap;
+      margin-bottom: 4rem;
+    }
+    .filter-btn {
+      font-family: var(--font-mono);
+      font-size: 0.65rem; letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1.1rem;
+      background: none; cursor: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--bg);
+      background: var(--accent);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1px; background: var(--border);
+    }
+    .grid-item {
+      background: var(--bg);
+      overflow: hidden; position: relative;
+      transition: background 0.3s;
+    }
+    .grid-item:hover { background: var(--surface); }
+    .grid-item.large { grid-column: span 8; }
+    .grid-item.small { grid-column: span 4; }
+    .grid-item.medium { grid-column: span 6; }
+    .grid-img {
+      width: 100%; aspect-ratio: 16/9;
+      overflow: hidden; background: var(--surface2);
+    }
+    .grid-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s ease; filter: brightness(0.85) saturate(0.9);
+    }
+    .grid-item:hover .grid-img img { transform: scale(1.04); filter: brightness(1) saturate(1); }
+    .grid-info { padding: 1.8rem 2rem; border-top: 1px solid var(--border); }
+    .grid-cat { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+    .grid-title { font-family: var(--font-display); font-size: 1.6rem; color: var(--text); margin-bottom: 0.5rem; }
+    .grid-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+    .grid-corner { position: absolute; top: 1rem; right: 1rem; font-size: 1.1rem; color: var(--text-dim); transition: color 0.2s, transform 0.2s; }
+    .grid-item:hover .grid-corner { color: var(--accent); transform: translate(3px,-3px); }
+
+    /* Category sections */
+    .cat-section { margin-bottom: 6rem; }
+    .cat-header {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .cat-title { font-family: var(--font-display); font-size: 2rem; color: var(--text); }
+    .cat-line { flex: 1; height: 1px; background: var(--border); }
+
+    @media (max-width: 900px) {
+      .portfolio-grid { padding: 3rem 1.5rem 5rem; }
+      .grid { grid-template-columns: 1fr; }
+      .grid-item.large, .grid-item.small, .grid-item.medium { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <div class="page-hero">
+    <p class="section-tag">Work</p>
+    <h1 class="page-hero-title">Port<span>folio</span></h1>
+    <p class="page-hero-desc">Hard surface props, sci-fi devices, environments and weapons — built in Blender and Plasticity.</p>
+  </div>
+
+  <div class="portfolio-grid">
+
+    <!-- PERSONAL PROJECTS -->
+    <div class="cat-section">
+      <div class="cat-header reveal">
+        <span class="cat-title">Personal Projects</span>
+        <div class="cat-line"></div>
+      </div>
+      <div class="grid">
+        <div class="grid-item large reveal">
+          <div class="grid-img"><img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/f6879349-305f-4898-805d-72e76460b0ba/scifi_scanner_ac_03.jpg" alt="Sci-fi HardSurface Device" loading="lazy"></div>
+          <div class="grid-info">
+            <div class="grid-cat">Plasticity · Hard Surface</div>
+            <div class="grid-title">Sci-Fi HardSurface Device</div>
+            <p class="grid-desc">A fully modeled sci-fi scanning device built in Plasticity. Clean forms, panel detailing, and hard surface workflows throughout.</p>
+          </div>
+          <div class="grid-corner">↗</div>
+        </div>
+        <div class="grid-item small reveal">
+          <div class="grid-img"><img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/1688156266750-CJ1TZ4TR5SO8WLE4DDPF/ac_scope_02.jpg" alt="Sci-Fi Scope" loading="lazy"></div>
+          <div class="grid-info">
+            <div class="grid-cat">Plasticity · Props</div>
+            <div class="grid-title">Sci-Fi Scope Model</div>
+            <p class="grid-desc">Detailed weapon scope with hard surface detailing and clean topology throughout.</p>
+          </div>
+          <div class="grid-corner">↗</div>
+        </div>
+        <div class="grid-item small reveal">
+          <div class="grid-img"><img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/97f35a71-dfbc-4d0c-a81e-7470c10a54de/sci-fi_battery_ac_01.jpg" alt="HardSurface Device 2" loading="lazy"></div>
+          <div class="grid-info">
+            <div class="grid-cat">Plasticity · Hard Surface</div>
+            <div class="grid-title">HardSurface Device 2</div>
+            <p class="grid-desc">Second entry in the sci-fi device series — a compact battery unit with modular panel design.</p>
+          </div>
+          <div class="grid-corner">↗</div>
+        </div>
+        <div class="grid-item large reveal">
+          <div class="grid-img"><img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/8805f31c-2810-4c54-b868-5ddbc14c440a/workshop_blockout_20.png" alt="The Workshop" loading="lazy"></div>
+          <div class="grid-info">
+            <div class="grid-cat">Blender · Environment</div>
+            <div class="grid-title">The Workshop</div>
+            <p class="grid-desc">Full environment modeling series in Blender. Real-time, no edits, no timelapse — the complete blockout-to-finish process.</p>
+          </div>
+          <div class="grid-corner">↗</div>
+        </div>
+        <div class="grid-item medium reveal">
+          <div class="grid-img"><img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/22145a83-2a2b-4a87-a662-7588b6b498f7/ac_The_back_Room_a.jpg" alt="The Back Room" loading="lazy"></div>
+          <div class="grid-info">
+            <div class="grid-cat">Blender · Environment</div>
+            <div class="grid-title">The Back Room</div>
+            <p class="grid-desc">Personal environment project showcasing atmospheric lighting and detailed prop work.</p>
+          </div>
+          <div class="grid-corner">↗</div>
+        </div>
+        <div class="grid-item medium reveal">
+          <div class="grid-img"><img src="https://images.squarespace-cdn.com/content/v1/649dafaba60a166f753a617a/57159a24-e79c-4b6d-9a6d-c5894e3d1755/ac_scope_03.jpg" alt="Hard Surface Models" loading="lazy"></div>
+          <div class="grid-info">
+            <div class="grid-cat">Plasticity · Hard Surface</div>
+            <div class="grid-title">Hard Surface Collection</div>
+            <p class="grid-desc">A collection of hard surface models created for the YouTube channel — props, devices, and sci-fi assets.</p>
+          </div>
+          <div class="grid-corner">↗</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFESSIONAL -->
+    <div class="cat-section">
+      <div class="cat-header reveal">
+        <span class="cat-title">Professional Portfolio</span>
+        <div class="cat-line"></div>
+      </div>
+      <div class="grid">
+        <div class="grid-item medium reveal" style="background:var(--surface);">
+          <div class="grid-img" style="display:flex;align-items:center;justify-content:center;background:var(--surface2);">
+            <span style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.2em;color:var(--text-dim);">COMING SOON</span>
+          </div>
+          <div class="grid-info">
+            <div class="grid-cat">Professional Work</div>
+            <div class="grid-title">Client Projects</div>
+            <p class="grid-desc">Professional commissions and client work available on request. Get in touch to discuss your project.</p>
+          </div>
+        </div>
+        <div class="grid-item medium reveal" style="background:var(--surface);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:4rem 2rem;text-align:center;">
+          <p class="section-tag" style="margin-bottom:1rem;">Work Together</p>
+          <p style="font-size:0.9rem;color:var(--text-muted);line-height:1.8;margin-bottom:2rem;max-width:300px;">Interested in commissioning work or a collaboration? Let's talk.</p>
+          <a href="/index.html#contact" class="btn-primary">Get In Touch</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="shared.js"></script>
+</body>
+</html>
