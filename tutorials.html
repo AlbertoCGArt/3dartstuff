@@ -3,72 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tutorials — 3DArtStuff</title>
-  <meta name="description" content="Hard surface 3D tutorials in Blender and Plasticity by Alberto CGArt. Free and premium resources.">
+  <title>Tutorials & Resources — 3DArtStuff</title>
+  <meta name="description" content="Hard surface 3D tutorials, smart materials, and reference packs by Alberto CGArt. Blender, Plasticity, Substance Painter resources.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
   <style>
     .tutorials-page { padding: 5rem 3rem 8rem; position: relative; z-index: 1; }
 
+    .gumroad-banner {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid var(--accent); padding: 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 6rem; gap: 2rem;
+    }
+    .gumroad-banner h3 { font-family: var(--font-display); font-size: 2rem; color: var(--text); margin-bottom: 0.5rem; }
+    .gumroad-banner p { font-size: 0.9rem; color: var(--text-muted); }
+
     .tut-section { margin-bottom: 6rem; }
     .tut-section-header {
       display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 3rem;
-      padding-bottom: 1.5rem;
+      margin-bottom: 3rem; padding-bottom: 1.5rem;
       border-bottom: 1px solid var(--border);
     }
     .tut-section-title { font-family: var(--font-display); font-size: 2.5rem; color: var(--text); }
     .tut-section-sub { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
 
-    .tut-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px; background: var(--border);
-    }
+    .tut-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+    .tut-grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .tut-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
     .tut-card {
-      background: var(--bg); padding: 2.5rem;
+      background: var(--bg); padding: 2rem;
       position: relative; transition: background 0.2s;
       border-top: 2px solid transparent;
+      display: flex; flex-direction: column;
     }
     .tut-card:hover { background: var(--surface); }
-    .tut-card.paid { border-top-color: var(--accent); }
-    .tut-card.free-card { border-top-color: var(--border2); }
-    .tut-card.series { border-top-color: var(--hot); }
+    .tut-card.is-paid { border-top-color: var(--accent); }
+    .tut-card.is-free { border-top-color: var(--border2); }
+    .tut-card.is-bundle { border-top-color: var(--hot); }
 
-    .t-badge { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.25rem 0.65rem; margin-bottom: 1.5rem; }
-    .t-badge.paid-b { background: var(--accent); color: var(--bg); }
-    .t-badge.free-b { border: 1px solid var(--border2); color: var(--text-muted); }
-    .t-badge.series-b { background: var(--hot); color: #fff; }
-    .t-badge.new-b { background: var(--surface2); color: var(--accent); border: 1px solid var(--accent); }
+    .t-badge {
+      display: inline-flex; align-items: center;
+      font-family: var(--font-mono); font-size: 0.58rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 0.25rem 0.65rem; margin-bottom: 1.2rem; width: fit-content;
+    }
+    .t-badge.paid { background: var(--accent); color: var(--bg); }
+    .t-badge.free { border: 1px solid var(--border2); color: var(--text-muted); }
+    .t-badge.bundle { background: var(--hot); color: #fff; }
+    .t-badge.file { background: var(--surface2); color: var(--accent); border: 1px solid var(--accent); }
 
-    .t-title { font-family: var(--font-display); font-size: 1.5rem; color: var(--text); line-height: 1.2; margin-bottom: 0.8rem; }
-    .t-tools { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .t-tool { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em; color: var(--text-dim); border: 1px solid var(--border); padding: 0.2rem 0.5rem; }
-    .t-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem; }
-    .t-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 1px solid var(--border); }
-    .t-price { font-family: var(--font-display); font-size: 1.8rem; color: var(--accent); line-height: 1; }
-    .t-price small { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); display: block; font-weight: 400; }
-    .t-price.free-price { color: var(--text-muted); }
-    .t-link { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .t-title { font-family: var(--font-display); font-size: 1.4rem; color: var(--text); line-height: 1.15; margin-bottom: 0.7rem; }
+    .t-tools { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+    .t-tool { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.1em; color: var(--text-dim); border: 1px solid var(--border); padding: 0.18rem 0.45rem; }
+    .t-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 1.5rem; flex: 1; }
+
+    .t-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1.2rem; border-top: 1px solid var(--border); margin-top: auto; }
+    .t-price { font-family: var(--font-display); font-size: 1.6rem; color: var(--accent); line-height: 1; }
+    .t-price small { font-family: var(--font-mono); font-size: 0.58rem; color: var(--text-muted); display: block; }
+    .t-price.is-free-price { color: var(--text-muted); }
+    .t-link { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
     .t-link:hover { color: var(--accent); }
 
-    /* Gumroad CTA banner */
-    .gumroad-banner {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      padding: 3rem;
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 5rem;
-      gap: 2rem;
-    }
-    .gumroad-banner-text h3 { font-family: var(--font-display); font-size: 2rem; color: var(--text); margin-bottom: 0.5rem; }
-    .gumroad-banner-text p { font-size: 0.9rem; color: var(--text-muted); }
+    .cta-card { background: var(--surface); padding: 3rem 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 1.5rem; }
+    .cta-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; max-width: 220px; }
 
+    @media (max-width: 1100px) { .tut-grid-4 { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 900px) {
       .tutorials-page { padding: 3rem 1.5rem 5rem; }
-      .tut-grid { grid-template-columns: 1fr; }
+      .tut-grid, .tut-grid-2, .tut-grid-4 { grid-template-columns: 1fr; }
       .gumroad-banner { flex-direction: column; }
       .tut-section-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
     }
@@ -79,128 +84,247 @@
   <div class="cursor-ring" id="cursorRing"></div>
 
   <div class="page-hero">
-    <p class="section-tag">Learn</p>
-    <h1 class="page-hero-title">Tutor<span>ials</span></h1>
-    <p class="page-hero-desc">Real-time, no-fluff 3D tutorials in Blender and Plasticity. Free on YouTube, premium resources on Gumroad.</p>
+    <p class="section-tag">Resources</p>
+    <h1 class="page-hero-title">Shop &<br><span>Learn</span></h1>
+    <p class="page-hero-desc">Plasticity files, smart materials, reference packs, and tutorials. Buy once, own forever.</p>
   </div>
 
   <div class="tutorials-page">
 
-    <!-- Gumroad Banner -->
     <div class="gumroad-banner reveal">
-      <div class="gumroad-banner-text">
-        <h3>Premium Tutorials on Gumroad</h3>
-        <p>Buy once, own forever. Instant download, no subscription required.</p>
+      <div>
+        <h3>All Products on Gumroad</h3>
+        <p>Instant download. No subscription. Yours forever.</p>
       </div>
-      <a href="https://albertocgart.gumroad.com" target="_blank" class="btn-primary">Visit Gumroad Store ↗</a>
+      <a href="https://albertocgart.gumroad.com" target="_blank" class="btn-primary">Visit Store ↗</a>
     </div>
 
-    <!-- PLASTICITY -->
+    <!-- PLASTICITY FILES -->
     <div class="tut-section">
       <div class="tut-section-header reveal">
-        <span class="tut-section-title">Plasticity</span>
+        <span class="tut-section-title">Plasticity Files</span>
         <span class="tut-section-sub">Hard Surface · CAD Modeling</span>
       </div>
-      <div class="tut-grid">
-        <div class="tut-card paid reveal">
-          <span class="t-badge paid-b">★ Best Seller</span>
-          <h3 class="t-title">Sci-Fi HardSurface Device</h3>
-          <div class="t-tools"><span class="t-tool">Plasticity</span></div>
-          <p class="t-desc">The complete modeling tutorial for the sci-fi scanning device. Learn hard surface techniques, form language, and clean Plasticity workflows from scratch.</p>
+      <div class="tut-grid tut-grid-2">
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge file">Plasticity File</span>
+          <h3 class="t-title">HardSurface Device</h3>
+          <div class="t-tools"><span class="t-tool">Plasticity</span><span class="t-tool">Hard Surface</span></div>
+          <p class="t-desc">The complete Plasticity source file for the sci-fi hard surface device. Study the topology, forms, and modeling decisions up close.</p>
           <div class="t-footer">
-            <div class="t-price">$29<small>One-time · Instant download</small></div>
-            <a href="https://albertocgart.gumroad.com" target="_blank" class="t-link">Get it →</a>
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/achsdp1" target="_blank" class="t-link">Buy Now →</a>
           </div>
         </div>
-        <div class="tut-card paid reveal">
-          <span class="t-badge paid-b">Paid</span>
-          <h3 class="t-title">Sci-Fi Scope Model</h3>
-          <div class="t-tools"><span class="t-tool">Plasticity</span></div>
-          <p class="t-desc">Full tutorial walkthrough for the detailed weapon scope. Learn how to build complex curved hard surface forms with clean topology.</p>
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge file">Plasticity File</span>
+          <h3 class="t-title">HardSurface Device 2</h3>
+          <div class="t-tools"><span class="t-tool">Plasticity</span><span class="t-tool">Hard Surface</span></div>
+          <p class="t-desc">Source file for the second hard surface device — the compact sci-fi battery unit. Full Plasticity file to explore and learn from.</p>
           <div class="t-footer">
-            <div class="t-price">$19<small>One-time · Instant download</small></div>
-            <a href="https://albertocgart.gumroad.com" target="_blank" class="t-link">Get it →</a>
-          </div>
-        </div>
-        <div class="tut-card series reveal">
-          <span class="t-badge series-b">Series</span>
-          <h3 class="t-title">Random Modeling in Plasticity</h3>
-          <div class="t-tools"><span class="t-tool">Plasticity</span></div>
-          <p class="t-desc">A growing collection of unscripted modeling sessions. Great for building intuition and watching real decisions happen in real time.</p>
-          <div class="t-footer">
-            <div class="t-price">$19<small>Series bundle</small></div>
-            <a href="https://albertocgart.gumroad.com" target="_blank" class="t-link">Get it →</a>
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/achsdp2" target="_blank" class="t-link">Buy Now →</a>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- BLENDER -->
+    <!-- REFERENCE PACKS -->
     <div class="tut-section">
       <div class="tut-section-header reveal">
-        <span class="tut-section-title">Blender</span>
-        <span class="tut-section-sub">Modeling · Materials · Environments</span>
+        <span class="tut-section-title">Reference Packs</span>
+        <span class="tut-section-sub">Artist Resources</span>
+      </div>
+      <div class="tut-grid tut-grid-2">
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge paid">Reference Pack</span>
+          <h3 class="t-title">Utility Tags Reference Pack</h3>
+          <div class="t-tools"><span class="t-tool">All Software</span></div>
+          <p class="t-desc">A curated collection of utility tag references for hard surface artists. Speed up your concepting and detailing workflow.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/qebcT" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge paid">Reference Pack</span>
+          <h3 class="t-title">Rocks and Surfaces Reference Pack</h3>
+          <div class="t-tools"><span class="t-tool">All Software</span></div>
+          <p class="t-desc">High quality rock and surface references for environment artists and texture painters. Great for grounding sci-fi scenes in realism.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/fXULH" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SMART MATERIALS -->
+    <div class="tut-section">
+      <div class="tut-section-header reveal">
+        <span class="tut-section-title">Smart Materials</span>
+        <span class="tut-section-sub">Substance Painter · Ready to Use</span>
+      </div>
+      <div class="tut-grid tut-grid-4">
+        <div class="tut-card is-free reveal">
+          <span class="t-badge free">★ Free</span>
+          <h3 class="t-title">Surface Worn Paint</h3>
+          <div class="t-tools"><span class="t-tool">Substance Painter</span></div>
+          <p class="t-desc">Worn paint smart material. Free to download — great intro to the material pack series.</p>
+          <div class="t-footer">
+            <div class="t-price is-free-price">Free<small>No strings</small></div>
+            <a href="https://albertocgart.gumroad.com/l/MqdZS" target="_blank" class="t-link">Download →</a>
+          </div>
+        </div>
+        <div class="tut-card is-bundle reveal">
+          <span class="t-badge bundle">Best Value</span>
+          <h3 class="t-title">10 Metal Smart Material Package</h3>
+          <div class="t-tools"><span class="t-tool">Substance Painter</span></div>
+          <p class="t-desc">All 10 metal smart materials in one pack. The best value way to get the full collection.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/dXatF" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge paid">Smart Material</span>
+          <h3 class="t-title">Damaged Metal 1</h3>
+          <div class="t-tools"><span class="t-tool">Substance Painter</span></div>
+          <p class="t-desc">Realistic damaged metal with dents, scratches, and chipped edges baked in.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/ZGrxZ" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge paid">Smart Material</span>
+          <h3 class="t-title">Old Iron Rusted</h3>
+          <div class="t-tools"><span class="t-tool">Substance Painter</span></div>
+          <p class="t-desc">Heavy oxidation and rust. Perfect for aged industrial and sci-fi props.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/zZkZb" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge paid">Smart Material</span>
+          <h3 class="t-title">Dusted Metal</h3>
+          <div class="t-tools"><span class="t-tool">Substance Painter</span></div>
+          <p class="t-desc">Subtle dust and grime accumulation on metal. Great for environmental storytelling.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/edSKG" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge paid">Smart Material</span>
+          <h3 class="t-title">Dusted Metal 2</h3>
+          <div class="t-tools"><span class="t-tool">Substance Painter</span></div>
+          <p class="t-desc">Second iteration with refined dust distribution and edge wear.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/fzldH" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge paid">Smart Material</span>
+          <h3 class="t-title">Machinery Paint 2</h3>
+          <div class="t-tools"><span class="t-tool">Substance Painter</span></div>
+          <p class="t-desc">Industrial machinery paint with chipping, wear, and grime for hard surface props.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/vwDRk" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge paid">Smart Material</span>
+          <h3 class="t-title">Machinery Paint 3</h3>
+          <div class="t-tools"><span class="t-tool">Substance Painter</span></div>
+          <p class="t-desc">Heavier chipping and layered paint history for a more battle-worn look.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/zHFXC" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+        <div class="tut-card is-paid reveal">
+          <span class="t-badge paid">Smart Material</span>
+          <h3 class="t-title">Rusted Pipe</h3>
+          <div class="t-tools"><span class="t-tool">Substance Painter</span></div>
+          <p class="t-desc">Heavily rusted pipe material with surface corrosion, pitting, and oxidation layers.</p>
+          <div class="t-footer">
+            <div class="t-price">Get it<small>Gumroad</small></div>
+            <a href="https://albertocgart.gumroad.com/l/cfdImL" target="_blank" class="t-link">Buy Now →</a>
+          </div>
+        </div>
+        <div class="cta-card reveal">
+          <p class="section-tag">More coming</p>
+          <p>New smart materials drop regularly. Follow on X to stay updated.</p>
+          <a href="https://x.com/AlbertoCGArt" target="_blank" class="btn-ghost">Follow @AlbertoCGArt</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- FREE YOUTUBE -->
+    <div class="tut-section">
+      <div class="tut-section-header reveal">
+        <span class="tut-section-title">Free on YouTube</span>
+        <span class="tut-section-sub">Blender · Plasticity · Real-Time</span>
       </div>
       <div class="tut-grid">
-        <div class="tut-card series reveal">
-          <span class="t-badge series-b">Series</span>
+        <div class="tut-card is-free reveal">
+          <span class="t-badge free">Free Series</span>
           <h3 class="t-title">The Workshop</h3>
           <div class="t-tools"><span class="t-tool">Blender</span><span class="t-tool">Environment</span></div>
-          <p class="t-desc">Full environment modeling series in Blender. Real-time, no edits, no timelapse — the complete blockout-to-finish process for a workshop scene.</p>
+          <p class="t-desc">Full environment modeling in Blender. Real-time, no edits, no timelapse — blockout to finish.</p>
           <div class="t-footer">
-            <div class="t-price free-price">Free<small>On YouTube</small></div>
+            <div class="t-price is-free-price">Free<small>On YouTube</small></div>
             <a href="https://www.youtube.com/@AlbertoCGArt" target="_blank" class="t-link">Watch Now →</a>
           </div>
         </div>
-        <div class="tut-card free-card reveal">
-          <span class="t-badge free-b">Free</span>
+        <div class="tut-card is-free reveal">
+          <span class="t-badge free">Free</span>
           <h3 class="t-title">Blending Materials in Blender</h3>
           <div class="t-tools"><span class="t-tool">Blender</span><span class="t-tool">Shader Editor</span></div>
-          <p class="t-desc">Quick tutorial on how to blend materials seamlessly in Blender. Perfect for beginners looking to level up their texturing game.</p>
+          <p class="t-desc">How to blend materials seamlessly in Blender using the shader editor. Quick and practical.</p>
           <div class="t-footer">
-            <div class="t-price free-price">Free<small>On YouTube</small></div>
+            <div class="t-price is-free-price">Free<small>On YouTube</small></div>
             <a href="https://www.youtube.com/@AlbertoCGArt" target="_blank" class="t-link">Watch Now →</a>
           </div>
         </div>
-        <div class="tut-card free-card reveal">
-          <span class="t-badge free-b">Free</span>
+        <div class="tut-card is-free reveal">
+          <span class="t-badge free">Free</span>
           <h3 class="t-title">Vertex Paint in Blender</h3>
           <div class="t-tools"><span class="t-tool">Blender</span><span class="t-tool">Vertex Paint</span></div>
-          <p class="t-desc">An easy way to blend materials and textures using Vertex Paint. A fast, flexible technique every Blender artist should know.</p>
+          <p class="t-desc">Blend materials using Vertex Paint — fast, flexible, and every Blender artist should know it.</p>
           <div class="t-footer">
-            <div class="t-price free-price">Free<small>On YouTube</small></div>
+            <div class="t-price is-free-price">Free<small>On YouTube</small></div>
             <a href="https://www.youtube.com/@AlbertoCGArt" target="_blank" class="t-link">Watch Now →</a>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- BLENDER 101 -->
-    <div class="tut-section">
-      <div class="tut-section-header reveal">
-        <span class="tut-section-title">Blender 101</span>
-        <span class="tut-section-sub">Beginner Series · All Free</span>
-      </div>
-      <div class="tut-grid">
-        <div class="tut-card free-card reveal">
-          <span class="t-badge free-b">Free Series</span>
-          <h3 class="t-title">Blender 101 Series</h3>
+        <div class="tut-card is-free reveal">
+          <span class="t-badge free">Free Series</span>
+          <h3 class="t-title">Blender 101</h3>
           <div class="t-tools"><span class="t-tool">Blender</span><span class="t-tool">Beginner</span></div>
-          <p class="t-desc">Foundational tutorials for total beginners. Learn Blender from the ground up — interface, modeling basics, materials, and rendering. No experience needed.</p>
+          <p class="t-desc">Complete beginner series. Interface, modeling basics, materials, and rendering from scratch.</p>
           <div class="t-footer">
-            <div class="t-price free-price">Free<small>Full series on YouTube</small></div>
+            <div class="t-price is-free-price">Free<small>On YouTube</small></div>
             <a href="https://www.youtube.com/@AlbertoCGArt" target="_blank" class="t-link">Watch Series →</a>
           </div>
         </div>
-        <div class="tut-card free-card reveal" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:3rem;">
-          <p class="section-tag" style="margin-bottom:1rem;">More coming</p>
-          <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.8;margin-bottom:2rem;">Subscribe on YouTube to get notified when new tutorials drop.</p>
-          <a href="https://www.youtube.com/@AlbertoCGArt" target="_blank" class="btn-primary">Subscribe ↗</a>
+        <div class="tut-card is-free reveal">
+          <span class="t-badge free">Free Series</span>
+          <h3 class="t-title">Random Modeling in Plasticity</h3>
+          <div class="t-tools"><span class="t-tool">Plasticity</span></div>
+          <p class="t-desc">Unscripted real-time Plasticity sessions. Watch real decisions happen — great for building intuition.</p>
+          <div class="t-footer">
+            <div class="t-price is-free-price">Free<small>On YouTube</small></div>
+            <a href="https://www.youtube.com/@AlbertoCGArt" target="_blank" class="t-link">Watch Series →</a>
+          </div>
         </div>
-        <div class="tut-card free-card reveal" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:3rem;">
-          <p class="section-tag" style="margin-bottom:1rem;">Premium Resources</p>
-          <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.8;margin-bottom:2rem;">Buy once, own forever. All premium tutorials live on Gumroad.</p>
-          <a href="https://albertocgart.gumroad.com" target="_blank" class="btn-ghost">Shop Gumroad ↗</a>
+        <div class="cta-card reveal">
+          <p class="section-tag">Subscribe</p>
+          <p>New tutorials every week. Free, always.</p>
+          <a href="https://www.youtube.com/@AlbertoCGArt" target="_blank" class="btn-primary">Subscribe ↗</a>
         </div>
       </div>
     </div>
