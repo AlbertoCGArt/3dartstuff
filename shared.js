@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <a href="/index.html" class="nav-logo">3D<span>Art</span>Stuff</a>
     <ul class="nav-links">
       <li><a href="/portfolio.html">Portfolio</a></li>
+      <li><a href="https://academy.3dartstuff.com" target="_blank">Academy</a></li>
       <li><a href="/tutorials.html">Tutorials</a></li>
       <li><a href="https://www.youtube.com/@AlbertoCGArt" target="_blank">YouTube</a></li>
       <li><a href="/index.html#about">About</a></li>
